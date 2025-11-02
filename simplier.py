@@ -1,5 +1,6 @@
 import csv
 import os
+import weighted
 
 FILENAME = "ano.csv"
 HEADER = [
@@ -17,6 +18,11 @@ HEADER = [
     "attendance_percent"
 ]
 
+# Weights for grade calculation (customize as needed)
+QUIZ_WEIGHT = 0.20  # 20% for average of quizzes
+MIDTERM_WEIGHT = 0.30  # 30% for midterm
+FINAL_WEIGHT = 0.40  # 40% for final
+ATTENDANCE_WEIGHT = 0.10  # 10% for attendance
 
 # --- Save to CSV (append mode, keep header) ---
 def save_to_csv(data, filename=FILENAME):
@@ -30,7 +36,6 @@ def save_to_csv(data, filename=FILENAME):
 
     print(f"💾 Data saved to {filename}")
 
-
 # --- Read/display CSV contents ---
 def read_csv(filename=FILENAME):
     if not os.path.exists(filename):
@@ -43,7 +48,7 @@ def read_csv(filename=FILENAME):
         for row in reader:
             print(row)
 
-
+# --- Add new student(s) ---
 # --- Add new student(s) ---
 def add_data():
     new_rows = []
@@ -53,12 +58,32 @@ def add_data():
         print(f"\n--- Student #{i+1} ---")
         student = []
         for h in HEADER:
-            val = input(f"Enter {h}: ")
-            student.append(val)
+            while True:  # Loop until valid input
+                val = input(f"Enter {h}: ").strip()  # Always strip input
+                
+                if h in ["last_name", "first_name", "section"]:
+                    # Trim spaces (already stripped above, but ensure no internal issues)
+                    student.append(val)
+                    break
+                elif h in ["quiz1", "quiz2", "quiz3", "quiz4", "quiz5", "midterm", "final", "attendance_percent"]:
+                    # Validate numeric fields
+                    try:
+                        num_val = float(val) if val else None  # Default to None if empty
+                        if num_val is not None and not (0 <= num_val <= 100):
+                            print("❌ Score must be between 0 and 100. Try again.")
+                            continue
+                        student.append(str(num_val) if num_val is not None else "")  # Store as string for CSV
+                        break
+                    except ValueError:
+                        print("❌ Invalid number. Try again.")
+                        continue
+                else:
+                    # For student_id or other non-validated fields
+                    student.append(val)
+                    break
         new_rows.append(student)
 
     save_to_csv(new_rows)
-
 
 # --- Delete a row by student_id ---
 def delete_data(filename=FILENAME):
@@ -88,7 +113,6 @@ def delete_data(filename=FILENAME):
 
     print(f"🗑️ Deleted student_id {student_id} successfully.")
 
-
 # --- Select and display one column ---
 def select_column(filename=FILENAME):
     if not os.path.exists(filename):
@@ -116,7 +140,6 @@ def select_column(filename=FILENAME):
     for row in rows:
         print(row[index])
 
-
 # --- Select and display one row by student_id ---
 def select_row(filename=FILENAME):
     if not os.path.exists(filename):
@@ -140,6 +163,7 @@ def select_row(filename=FILENAME):
     print("❌ No student found with that ID.")
 
 
+
 # --- Menu ---
 def menu():
     while True:
@@ -149,7 +173,8 @@ def menu():
         print("3. Delete Student by ID")
         print("4. Select Column")
         print("5. Select Row by Student ID")
-        print("6. Exit")
+        print("6. Compute Weighted Grades")
+        print("7. Exit")
 
         choice = input("Enter choice: ")
 
@@ -164,11 +189,12 @@ def menu():
         elif choice == "5":
             select_row()
         elif choice == "6":
+            weighted.compute_grades()
+        elif choice == "7":
             print("👋 Exiting program.")
             break
         else:
             print("❌ Invalid choice. Try again.")
-
 
 # --- Run program ---
 menu()
