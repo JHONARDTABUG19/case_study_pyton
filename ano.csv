@@ -1,2 +1,6 @@
 student_id,last_name,first_name,section,quiz1,quiz2,quiz3,quiz4,quiz5,midterm,final,attendance_percent
-1111,tabug,jhonard,A,11,11,11,11,11,11,11,11
+1010,tabug,,jhonard,12,23,34,45,56,90,10,100,
+2222,tabuggg,jhonard,,56,56,56,56,56,56,56,56,
+0123,tabug,jhonard,99,99.0,99.0,99.0,99.0,99.0,99.0,99.0,99.0
+4444,jhonard,tabug,A,66.0,66.0,66.0,66.0,66.0,66.0,66.0,66.0
+0000,kerby,tabug,AS,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
