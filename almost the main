@@ -1,0 +1,95 @@
+import csv
+import os
+import statistics
+import weighted  # your existing weighted.py module
+import transform # select, project, sort, insert, delete
+# ----------------------
+# Configuration
+# ----------------------
+FILENAME = "ano.csv"
+HEADER = [
+    "student_id",
+    "last_name",
+    "first_name",
+    "section",
+    "quiz1",
+    "quiz2",
+    "quiz3",
+    "quiz4",
+    "quiz5",
+    "midterm",
+    "final",
+    "attendance_percent"
+]
+
+
+
+
+
+# ----------------------
+# Main Menu
+# ----------------------
+def menu():
+    while True:
+        print("\n=== STUDENT CSV MENU ===")
+        print("1. Add and Save Student(s)")
+        print("2. Read CSV File")
+        print("3. Delete Student by ID")
+        print("4. Select Header column")
+        print("5. Project Student Record by Student ID")
+        print("6. Analytics and Reports")
+        print("7. Exit")
+
+        choice = input("Enter choice: ").strip()
+
+        if choice == "1":
+            transform.add_data()
+        elif choice == "2":
+            valid_rows, _ = transform.clean_ingest()
+            if valid_rows:
+                print("\n📘 Valid rows:")
+                for row in valid_rows:
+                    print(row)
+        elif choice == "3":
+            transform.delete_data()
+        elif choice == "4":
+            transform.select_column()
+        elif choice == "5":
+            transform.select_row()
+        elif choice == "6":
+            while True:
+                print("\n📊 ANALYTICS MENU")
+                print("a. Compute Weighted Grades")
+                print("b. Grade Distribution (A–F)")
+                print("c. Percentiles (Top/Bottom 10%)")
+                print("d. Outlier Detection (±2 SD)")
+                print("e. Improvement (Final vs Midterm)")
+                print("f. Back to Main Menu")
+
+                sub = input("Select an option (a–f): ").lower().strip()
+
+                if sub == "a":
+                    weighted.compute_grades()
+                elif sub == "b":
+                    weighted.grade_distribution()
+                elif sub == "c":
+                    weighted.percentiles()
+                elif sub == "d":
+                    weighted.outliers()
+                elif sub == "e":
+                    weighted.improvement()
+                elif sub == "f":
+                    break
+                else:
+                    print("❌ Invalid choice. Try again.")
+        elif choice == "7":
+            print("👋 Exiting program.")
+            break
+        else:
+            print("❌ Invalid choice. Try again.")
+
+
+# ----------------------
+# Run Program
+# ----------------------
+menu()
